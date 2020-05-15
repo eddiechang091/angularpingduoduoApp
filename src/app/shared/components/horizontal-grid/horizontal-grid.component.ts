@@ -1,32 +1,41 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Emoji, Confirmable } from '../../decorator';
 
+export interface Channel{
+  id: number;
+  title: string;
+  icon: string;
+  link: string;
+}
 @Component({
   selector: 'app-horizontal-grid',
   templateUrl: './horizontal-grid.component.html',
   styleUrls: ['./horizontal-grid.component.css']
 })
 export class HorizontalGridComponent implements OnInit {
-  private _username = '';
-  @Output() usernameChange = new EventEmitter();
-  @Emoji() result = '您好';
-  constructor() { }
 
-  ngOnInit() {
+  @Input() cols = 8;
+  @Input() displayCols = 5;
+  sliderMargin = '0';
+  constructor() {}
+
+  ngOnInit() {}
+
+  public get scrollable(): boolean {
+    return this.cols > this.displayCols;
   }
 
-  @Input()
-  public get userName():string{
-    return this._username;
-  }
-  public set userName(value:string){
-    this._username = value;
-    this.usernameChange.emit(this._username);
+  public get templateRows(): string {
+    return `minmax(auto, max-content)`;
   }
 
-  @Confirmable('已经点击，是否确认执行？')
-  handleClick(){
-    console.log('点击已执行');
+  public get templateColumns(): string {
+    return `repeat(${this.cols}, calc((100vw - ${this.displayCols *
+      0.4}rem) / ${this.displayCols}))`;
   }
 
-}
+  public handleScroll(ev:any) {
+    this.sliderMargin = `0 ${(100 * ev.target.scrollLeft) /
+      ev.target.scrollWidth}%`;
+  }
+  }
+
